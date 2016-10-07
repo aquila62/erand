@@ -305,7 +305,7 @@ Example:
 
 fcdeal 617
 
-The output is 7 rows of cards, 8 columns each row.
+The output is a tableau of 7 rows and 8 columns.
 The first letter is the rank, Ace through King.
 The second letter is the suit, Club, Diamond, Heart,
 and Spade.
