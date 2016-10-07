@@ -14,6 +14,19 @@ and ones.
 
 ------------------------------------------------------
 
+Time erand by running erandtim.  There are no parameters.
+
+./erandtim
+
+The output is a comparison between the performance of erand
+and the GNU Scientific Library generator, taus2.  Taus2 is
+listed as the fastest among the strong generators in the GSL.
+100 million calls are made to each generator, and the
+number of ticks consumed by each generator forms the basis
+of comparison.
+
+------------------------------------------------------
+
 Uniform distribution chi square test.
 There are no parameters.
 
