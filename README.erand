@@ -31,7 +31,18 @@ The factors of the constant a-1 are:
 
 4, 53503
 
-The constant c is co-prime with the constant a.
+The prime factors of the constant c are:
+
+7, 17, 21269
+
+The constant c is co-prime with the modulus m.
+The constant c is not divisible by 2.
+
+The constant a-1 is divisible by a prime factor of m.
+The prime factor of m is 2.
+
+The constant m is divisible by 4 and the constant a-1 is
+also divisible by 4.
 
 The factors listed above indicate that the constant a
 in the erand generator meet the necessary conditions of a
