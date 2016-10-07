@@ -1,0 +1,184 @@
+erand is a random number generator (RNG) that produces 31-bit unsigned
+integers in a uniform distribution.  erand is an extended version of
+Microsoft's rand() RNG, used in the Windows solitaire game, FreeCell.
+erand passes dieharder and TestU01 randomness tests, but Microsoft's
+rand() generator fails those tests.  erand has a period length equivalent
+to the factorial of 1024, whereas Microsoft's rand() has a period
+length no greater than 2^31.
+
+erand performs a Bays-Durham shuffle on its output without sacrificing
+performance.  The Bays-Durham shuffle in erand shuffles an array of
+1024 31-bit states.  The performance of erand is faster than the
+taus2 generator in the GNU Scientific Library.
+
+erand is a "linear congruential generator".  This is a class
+of random number generators based on the following formula:
+
+x = (a * x) + c   mod(m)
+
+Where a = 214013
+      c = 2531011
+      m = 2^31
+
+The choice of constants in erand is based on Microsoft's
+rand() generator.
+
+The prime factors of the constant a are:
+
+17, 12589
+
+The factors of the constant a-1 are:
+
+4, 53503
+
+The constant c is co-prime with the constant a.
+
+The factors listed above indicate that the constant a
+in the erand generator meet the necessary conditions of a
+linear congruential generator to achieve a period length of m.
+
+See T.E.HULL and A.R.Dobell, "Random Number Generators",
+SIAM Review, Vol. 4, Number 3, (July, 1962), pp. 230-254.
+
+Period length of erand.
+
+The period length of erand is based on the random number generator
+state.  In the case of erand, the random number generator state is
+three generations of output, plus an array of 1024 states used by
+the Bays-Durham shuffle.
+
+The period length is the number of generations it takes before
+every output of the random number generator is repeated in sequence
+for the same number of generations.
+
+Because of the Bays-Durham shuffle, the period length of erand is
+theoretically 5.41e+2639, or the factorial of 1024.  The period
+length is so long that it can not be demonstrated on the strongest
+super-computer in existence today.
+
+One way to test the period length is to build a database, where the
+key is two successive generations of erand output.  If there are no
+duplicate keys after hundreds of trillions of generations, then the
+period length is at least as long as the test.  If the test fails,
+then increase the size of the key to three successive generations
+of erand output, and rerun the test.
+
+Test results.
+
+The erand random number generator has tested successfully in the
+following tests.
+
+    dieharder -a
+    TestU01 Crush
+    National Institute of Standards and Technology STS test suite.
+
+The dieharder test yielded three weak p-values and no fails.
+Upon retesting, the three weak p-values did not appear in
+the same three tests, so weak results are subject to chance
+with the erand generator.
+
+The TestU01 Crush test yielded no fails.
+
+Most of the STS tests are easy to pass, and so passing them does
+not validate a generator to any great degree.  Nevertheless,
+erand passed the STS suite of tests, especially the harder tests.
+TestU01 incorporates the STS suite of tests into its own Crush
+suite.  Dieharder incorporates George Marsaglia's original diehard
+suite of tests.
+
+Without the Bays-Durham shuffle, Microsoft's rand() fails dieharder
+randomness tests.
+
+Benchmarking.
+
+The benchmarking program counts the number of ticks taken to call
+the random number generator one hundred million times.  erand
+performs 30% faster than taus2 in the GNU Scientific Library (GSL).
+In Monte Carlo tests, erand performs as fast as the Mersenne
+Twister.
+
+When testing erand as input to dieharder -g 200, be cautioned
+that the raw input feature of dieharder slows down the test.
+It is better to integrate erand into dieharder as an internal
+random number generator in the 600 series of generators.
+
+The same is true with TestU01.  It is better to integrate erand
+as an internal random number generator in order to speed up the
+test.
+
+When fed as raw input to dieharder through a pipe, the erand
+generator consumes about 20% of the CPU, while dieharder consumes
+about 70%.  This ratio depends on the dieharder test.  In other
+tests, the ratio may be reversed.
+
+Initialization.
+
+Initialize the 1024 states in erand to non-zero random or arbitrary
+values.  That amounts to initializing erand to more than 4000 bytes
+of data.
+
+If you wish, you may override the initial values of the state array,
+so that you may conduct regression tests. You will also have to
+initialize the original erand state (x) and the two previous outputs.
+The encryption program, erandencr.c, serves as an example of a program,
+where the initial state is overridden by a password.
+
+All of the erand states are available to the programmer through a
+public structure.  See the header file, erand.h, for the structure.
+
+Distributed processing.
+
+erand is conducive to running on a Beowulf style of supercomputer.
+Each of its 1024 states may be manipulated independently in separate
+nodes of the supercomputer.  The one bottle neck occurs during the
+Bays-Durham shuffle, when the state array is being changed.
+I see no reason why erand could not keep pace with the fastest
+supercomputer in a scientific experiment.
+
+It is also possible to run parallel versions of erand on a
+supercomputer, where each version starts at a different point
+in its period length.
+
+Supporting subroutines.
+
+The erand generator has four subroutines that depend on it.
+The calling program is responsible for passing valid parameters.
+Each subroutine may be called billions of times in a scientific
+experiment.  Validation in the subroutine would be redundant
+in most cases.
+
+erandunif.c produces a uniform random number from 0 - 1.  Its only
+parameter is the erand structure.
+
+erandint.c produces a uniform random integer from 0 up to a limit.
+The limit must be from 2 to 32767.  It has two parameters, the
+erand structure, and the limit.  The limit may be negative or
+positive.
+
+erandpwr.c produces an unsigned integer of 1 to 32 bits.  It has
+two parameters, the erand structure, and the number of bits.
+
+erandbit.c produces an ASCII boolean integer (0 or 1).    Its only
+parameter is the erand structure.
+
+Utilities.
+
+erandgen.c produces an ASCII stream of ones and zeros to stdout.
+
+erandraw.c feeds random binary data through a pipe into down stream
+programs, such as the dieharder or TestU01 test suites.
+
+Porting to MinGW.
+
+The core erand subroutines and generators are easy to port to MinGW
+on Windows 10.  erandinit.c has to be changed to accomodate date/time
+initialization.  The clock routine is not used in MinGW.  It is common
+practice to hash the date and time to produce a random initial state.
+
+----------------------------------------------------------------
+
+Read INSTALL for installing erand.
+
+Read TESTING for running tests in this repository.
+
+The website for erand is at https://aquila62.github.io.
