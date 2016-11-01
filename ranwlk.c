@@ -22,8 +22,8 @@ along with this program; if not, write to:
 
 /* this program performs a random walk in X Windows            */
 /* based on random input                                       */
-/* etausgen.c produces the input data through a pipe           */
-/* use the tstwlk.sh script to test this program with etausgen */
+/* erandgen.c produces the input data through a pipe           */
+/* use the tstwlk.sh script to test this program with erandgen */
 /* Press any key to quit                                       */
 
 /* to define the escape key */
